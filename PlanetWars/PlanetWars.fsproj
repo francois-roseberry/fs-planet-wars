@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>0bb834b5-1c38-48ea-bf65-8cb0efe6d226</ProjectGuid>
+    <ProjectGuid>{602f60a5-4ce4-4321-9c38-8e28b6975e73}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>PlanetWars</RootNamespace>
     <AssemblyName>PlanetWars</AssemblyName>
@@ -39,7 +39,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Module1.fs" />
+    <Compile Include="Game.fs" />
     <None Include="Script.fsx" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="!Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
