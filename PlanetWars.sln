@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PlanetWarsUI", "PlanetWarsUI.fsproj", "{08E35AF0-16FB-4B3D-B324-EDFC81DB77F0}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PlanetWarsUI", ".\PlanetWarsUI\PlanetWarsUI.fsproj", "{08E35AF0-16FB-4B3D-B324-EDFC81DB77F0}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PlanetWars", "..\PlanetWars\PlanetWars.fsproj", "{602F60A5-4CE4-4321-9C38-8E28B6975E73}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PlanetWars", ".\PlanetWars\PlanetWars.fsproj", "{602F60A5-4CE4-4321-9C38-8E28B6975E73}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{385B24B3-41C8-49B5-B61B-ECAB160F85D6}"
 EndProject
