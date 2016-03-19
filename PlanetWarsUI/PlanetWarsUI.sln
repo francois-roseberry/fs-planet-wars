@@ -5,7 +5,12 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PlanetWarsUI", "PlanetWarsU
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "PlanetWars", "..\PlanetWars\PlanetWars.fsproj", "{602F60A5-4CE4-4321-9C38-8E28B6975E73}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{385B24B3-41C8-49B5-B61B-ECAB160F85D6}"
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = PlanetWarsUI.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
