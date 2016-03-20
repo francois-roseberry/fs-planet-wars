@@ -46,7 +46,7 @@ let armies_leave planets index armies = alter_list_index planets (fun p -> {Owne
 // - if owned by the opponent, subtract the armies to those present, then, if the result is :
 //                                                                          - negative      -> the planet becomes owned, and the armies count is reversed
 //                                                                          - 0 or positive -> the planet stays owned by the opponent
-let armies_arrive planets planetIndex player_index armies =
+let armies_arrive planets planet_index player_index armies =
                             let armies_arrive_planet p = match p.Owner with
                                                                 | None                                  -> {Owner = Some(player_index); Armies = p.Armies + armies}
                                                                 | Some(owner) when owner = player_index -> {Owner = p.Owner; Armies = p.Armies + armies}
@@ -54,7 +54,7 @@ let armies_arrive planets planetIndex player_index armies =
                                                                                                            match result with
                                                                                                            | r when r < 0 -> {Owner = Some(player_index); Armies = -r}
                                                                                                            | r            -> {Owner = p.Owner; Armies = r}
-                            alter_list_index planets armies_arrive_planet planetIndex
+                            alter_list_index planets armies_arrive_planet planet_index
 
 // Apply a move
 // 1 - substract 'Armies' from the 'From' planet
