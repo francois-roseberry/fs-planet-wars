@@ -12,10 +12,12 @@ let print_planet planet = match planet.Owner with
                           | None        -> Console.ForegroundColor <- ConsoleColor.White; printf "()"
                           | Some(owner) -> Console.ForegroundColor <- player_color owner; printf "(%d)" planet.Armies
 
-let print_planets planets = List.map print_planet planets |> ignore
+let print_planets planets = List.iter print_planet planets
+
+let print_turn planets = print_planets planets; printfn ""
 
 printfn "Planet Wars game"
 printfn "Result : "
-print_planets game
+List.iter print_turn (game 0)
 printfn ""
 System.Console.ReadLine() |> ignore

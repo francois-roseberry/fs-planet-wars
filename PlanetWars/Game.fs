@@ -70,10 +70,15 @@ let player_turn player player_index planets =
 
 // Game turn : takes the list of planets and both player functions as input, and output the new list of planets after the turn
 // Turn consists of increasing armies of owned planets, then make players play
-let turn planets player1 player2 =
-            let after_start = turn_start planets
-            let after_player1 = player_turn player1 0 after_start
-            player_turn player2 1 after_player1
+// TODO find out why the state is overwritten by the next one (should be a copy ?)
+let rec turn planets player1 player2 turns =
+            match turns with
+            | 0 -> [planets]
+            | _ -> let after_start = turn_start planets
+                   let after_player1 = player_turn player1 0 after_start
+                   let after_turn = player_turn player2 1 after_player1
+                   let next_turn = turn after_turn player1 player2 (turns-1)
+                   after_turn::next_turn
 
 
 let find_owned_planet player_index = List.findIndex (fun p -> p.Owner = Some(player_index))
@@ -88,7 +93,7 @@ let player player_index planets = {
                                   }
 
 // Main game function : outputs the list of planets after 1 turn (TODO later will play as many turns as necessary to find a winner)
-let game =
+let game turns =
         let player1 = player 0
         let player2 = player 1
-        turn initial_state player1 player2
+        turn initial_state player1 player2 turns
