@@ -11,7 +11,7 @@ module Game
 
 
 // Planet state is a tuple of owner player id, or -1 if free, and number of armies present
-type Planet = { Owner: int;
+type Planet = { Owner: int option;
                 Armies: int }
 
 // A move is a tuple of of a 'From' planet index, 'To' planet index, and the number of armies to move
@@ -19,14 +19,14 @@ type Move = { From: int;
               To: int;
               Armies: int}
 
-let free_planet = { Owner = -1; Armies = 0 }
+let free_planet = { Owner = None; Armies = 0 }
 
-let initial_state = [{Owner = 0; Armies = 0}; free_planet; free_planet; {Owner = 1; Armies = 0}]
+let initial_state = [{Owner = Some(0); Armies = 0}; free_planet; free_planet; {Owner = Some(1); Armies = 0}]
 
 // At the beginning of a turn, each owned planet has its Armies increased by 1
 let give_armies planet = 
     match planet.Owner with
-    | -1 -> planet
+    | None -> planet
     | _ -> {Owner = planet.Owner; Armies = planet.Armies + 1}
 
 let turn_start = List.map give_armies
@@ -48,12 +48,12 @@ let armies_leave planets index armies = alter_list_index planets (fun p -> {Owne
 //                                                                          - 0 or positive -> the planet stays owned by the opponent
 let armies_arrive planets planetIndex player_index armies =
                             let armies_arrive_planet p = match p.Owner with
-                                                                | -1                              -> {Owner = player_index; Armies = p.Armies + armies}
-                                                                | owner when owner = player_index -> {Owner = p.Owner; Armies = p.Armies + armies}
-                                                                | _                               -> let result = p.Armies - armies
-                                                                                                     match result with
-                                                                                                     | r when r < 0 -> {Owner = player_index; Armies = -r}
-                                                                                                     | r            -> {Owner = p.Owner; Armies = r}
+                                                                | None                                  -> {Owner = Some(player_index); Armies = p.Armies + armies}
+                                                                | Some(owner) when owner = player_index -> {Owner = p.Owner; Armies = p.Armies + armies}
+                                                                | _                                     -> let result = p.Armies - armies
+                                                                                                           match result with
+                                                                                                           | r when r < 0 -> {Owner = Some(player_index); Armies = -r}
+                                                                                                           | r            -> {Owner = p.Owner; Armies = r}
                             alter_list_index planets armies_arrive_planet planetIndex
 
 // Apply a move
@@ -76,8 +76,8 @@ let turn planets player1 player2 =
             player_turn player2 1 after_player1
 
 
-let find_owned_planet player_index = List.findIndex (fun p -> p.Owner = player_index)
-let find_not_owned_planet player_index = List.findIndex (fun p -> p.Owner <> player_index)
+let find_owned_planet player_index = List.findIndex (fun p -> p.Owner = Some(player_index))
+let find_not_owned_planet player_index = List.findIndex (fun p -> p.Owner <> Some(player_index))
 
 // A player function takes the state as input then output a move (TODO later a list of moves)
 // It should find a planet it owns, then move its armies to a planet it doesn't
