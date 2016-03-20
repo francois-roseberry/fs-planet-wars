@@ -15,7 +15,6 @@ let print_planet planet = match planet.Owner with
 let print_planets planets = List.map print_planet planets |> ignore
 
 printfn "Planet Wars game"
-Console.ForegroundColor <- ConsoleColor.Cyan
 printfn "Result : "
 print_planets game
 printfn ""
