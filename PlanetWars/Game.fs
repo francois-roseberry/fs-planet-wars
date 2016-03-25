@@ -1,14 +1,4 @@
-﻿// Learn more about F# at http://fsharp.net
-
-module Game
-
-// Need a game function that take player function as parameters and output the game result
-
-// For now game result will be winnning player, and number of turns it taked
-
-// Game result will contain a list of the states of the game at each turn
-// State of the game consist of a list of planet states
-
+﻿module Game
 
 // Planet state is a tuple of owner player id, or -1 if free, and number of armies present
 type Planet = { Owner: int option;
@@ -63,22 +53,25 @@ let apply_move move planets player_index =
             let after_left = armies_leave planets move.From move.Armies
             armies_arrive after_left move.To player_index move.Armies
 
+let apply_moves moves planets player_index =
+    let apply_move_inc state move = apply_move move state player_index
+    List.fold apply_move_inc planets moves
+
 // Gets a player's move and apply it to planets
 let player_turn player player_index planets =
-            let move = player planets
-            apply_move move planets player_index
+            let moves = player planets
+            apply_moves moves planets player_index
 
 // Game turn : takes the list of planets and both player functions as input, and output the new list of planets after the turn
 // Turn consists of increasing armies of owned planets, then make players play
-// TODO find out why the state is overwritten by the next one (should be a copy ?)
-let rec turn planets player1 player2 turns =
-            match turns with
+let rec turn planets player1 player2 turns_left =
+            match turns_left with
             | 0 -> [planets]
             | _ -> let after_start = turn_start planets
                    let after_player1 = player_turn player1 0 after_start
                    let after_turn = player_turn player2 1 after_player1
-                   let next_turn = turn after_turn player1 player2 (turns-1)
-                   after_turn::next_turn
+                   let next_turn = turn after_turn player1 player2 (turns_left-1)
+                   planets::next_turn
 
 
 let find_owned_planet player_index = List.findIndex (fun p -> p.Owner = Some(player_index))
@@ -86,14 +79,16 @@ let find_not_owned_planet player_index = List.findIndex (fun p -> p.Owner <> Som
 
 // A player function takes the state as input then output a move (TODO later a list of moves)
 // It should find a planet it owns, then move its armies to a planet it doesn't
-let player player_index planets = {
+let player player_index planets = [{
                                         From = find_owned_planet player_index planets;
                                         To = find_not_owned_planet player_index planets;
                                         Armies = 1;
-                                  }
+                                  }]
+
+let idle_player _ = []
 
 // Main game function : outputs the list of planets after 1 turn (TODO later will play as many turns as necessary to find a winner)
 let game turns =
         let player1 = player 0
-        let player2 = player 1
+        let player2 = idle_player
         turn initial_state player1 player2 turns

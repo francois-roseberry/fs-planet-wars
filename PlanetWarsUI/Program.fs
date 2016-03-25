@@ -18,6 +18,6 @@ let print_turn planets = print_planets planets; printfn ""
 
 printfn "Planet Wars game"
 printfn "Result : "
-List.iter print_turn (game 0)
+List.iter print_turn (game 3)
 printfn ""
 System.Console.ReadLine() |> ignore
