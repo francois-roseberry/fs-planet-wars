@@ -22,14 +22,20 @@ let give_armies planet =
 let turn_start = List.map give_armies
 
 // Utility function to make a copy of a list with only the element at index altered with fn
-let rec alter_list_index list fn index = match index with
-                                           | 0 -> (fn (List.head list))::(List.tail list)
-                                           | i -> (List.head list)::alter_list_index (List.tail list) fn (i-1)
+exception OutOfBoundsException
+exception InvalidIndexException
+let rec alter_list_index list fn index =
+    match (list,index) with
+    | (_,i) when i < 0 -> raise InvalidIndexException
+    | ([],_) -> raise OutOfBoundsException
+    | (h::t,0) -> (fn h)::t
+    | (h::t,i) -> h::alter_list_index t fn (i-1)
 
 // Remove the armies from the planet it leaves
 // TODO : add a check so a planet's armies won't fall below zero
 // TODO : add a check so the planet it leaves is really owned by the player
-let armies_leave planets index armies = alter_list_index planets (fun p -> {Owner = p.Owner; Armies = p.Armies - armies}) index
+let armies_leave planets index armies =
+    alter_list_index planets (fun p -> {Owner = p.Owner; Armies = p.Armies - armies}) index
 
 // This one has two cases :
 // - if planet is owned by the player or free, it becomes owned and armies are added
@@ -37,14 +43,14 @@ let armies_leave planets index armies = alter_list_index planets (fun p -> {Owne
 //                                                                          - negative      -> the planet becomes owned, and the armies count is reversed
 //                                                                          - 0 or positive -> the planet stays owned by the opponent
 let armies_arrive planets planet_index player_index armies =
-                            let armies_arrive_planet p = match p.Owner with
-                                                                | None                                  -> {Owner = Some(player_index); Armies = p.Armies + armies}
-                                                                | Some(owner) when owner = player_index -> {Owner = p.Owner; Armies = p.Armies + armies}
-                                                                | _                                     -> let result = p.Armies - armies
-                                                                                                           match result with
-                                                                                                           | r when r < 0 -> {Owner = Some(player_index); Armies = -r}
-                                                                                                           | r            -> {Owner = p.Owner; Armies = r}
-                            alter_list_index planets armies_arrive_planet planet_index
+    let armies_arrive_planet p = match p.Owner with
+                                 | None                                  -> {Owner = Some(player_index); Armies = p.Armies + armies}
+                                 | Some(owner) when owner = player_index -> {Owner = p.Owner; Armies = p.Armies + armies}
+                                 | _                                     -> let result = p.Armies - armies
+                                                                            match result with
+                                                                            | r when r < 0 -> {Owner = Some(player_index); Armies = -r}
+                                                                            | r            -> {Owner = p.Owner; Armies = r}
+    alter_list_index planets armies_arrive_planet planet_index
 
 // Apply a move
 // 1 - substract 'Armies' from the 'From' planet
@@ -79,16 +85,18 @@ let find_not_owned_planet player_index = List.findIndex (fun p -> p.Owner <> Som
 
 // A player function takes the state as input then output a move (TODO later a list of moves)
 // It should find a planet it owns, then move its armies to a planet it doesn't
-let player player_index planets = [{
-                                        From = find_owned_planet player_index planets;
-                                        To = find_not_owned_planet player_index planets;
-                                        Armies = 1;
-                                  }]
+let normal_player player_index planets =
+    [{
+         From = find_owned_planet player_index planets;
+         To = find_not_owned_planet player_index planets;
+         Armies = 1;
+    }]
 
+// The simplest type of player, does absolutely nothing
 let idle_player _ = []
 
 // Main game function : outputs the list of planets after 1 turn (TODO later will play as many turns as necessary to find a winner)
 let game turns =
-        let player1 = player 0
+        let player1 = normal_player 0
         let player2 = idle_player
         turn initial_state player1 player2 turns
